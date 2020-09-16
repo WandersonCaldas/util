@@ -540,4 +540,72 @@ Public Class Util
 
         Return retorno
     End Function
+
+    Public Shared Function ComputeSha256Hash(ByVal valor As String) As String
+        Dim retorno As String = ""
+
+        Using sha256Hash As SHA256 = SHA256.Create()
+            Dim bytes As Byte() = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(valor))
+
+            Dim builder As StringBuilder = New StringBuilder()
+
+            For i As Integer = 0 To bytes.Length - 1
+                builder.Append(bytes(i).ToString("x2"))
+            Next
+
+            retorno = builder.ToString
+        End Using
+
+
+        Return retorno
+    End Function
+
+    Public Shared Function destacar_ativo(ByVal valor As Integer, ByVal color As Boolean) As String
+        If valor.ToString() = "1" Then
+            If color Then
+                Return "<font color=""green""><b>SIM</b></font>"
+            Else
+                Return "SIM"
+            End If
+        Else
+            If color Then
+                Return "<font color=""red""><b>NÃO</b></font>"
+            Else
+                Return "NÃO"
+            End If
+        End If
+    End Function
+
+    Public Shared Function FormatarCep(ByVal txtCep As String) As String
+        Dim mtpCep As MaskedTextProvider
+        Dim txt_cep As String = txtCep
+        If (txtCep.Length = 8) Then
+            mtpCep = New MaskedTextProvider("00000-000")
+            mtpCep.Set(txtCep)
+            txt_cep = mtpCep.ToString()
+        End If
+
+        Return txt_cep
+
+    End Function
+
+    Public Shared Function CompletaEspaco(ByVal txt_texto As String, ByVal cod_quantidade As Integer) As String
+        Dim cod_qtd_espaco As Integer = 0
+        While cod_qtd_espaco <= cod_quantidade
+            txt_texto = "&nbsp;" & txt_texto
+            cod_qtd_espaco += 1
+        End While
+        CompletaEspaco = txt_texto
+    End Function
+
+    Public Shared Function UT8Encode(ByVal input As String) As String
+        Dim iso_8859_1 As System.Text.Encoding = System.Text.Encoding.GetEncoding("iso-8859-1")
+        Dim utf_8 As System.Text.Encoding = System.Text.Encoding.UTF8
+
+        Dim isoBytes As Byte() = iso_8859_1.GetBytes(input)
+        Dim utf8Bytes As Byte() = System.Text.Encoding.Convert(iso_8859_1, utf_8, isoBytes)
+
+        Return utf_8.GetString(utf8Bytes)
+    End Function
+
 End Class
